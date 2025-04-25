@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PostController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Post;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -23,5 +25,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/posts', function () {
+    return Inertia::render('Posts/Index', [
+        'posts' => Post::with('user:id,name')
+                        ->latest()
+                        ->paginate(10)
+    ]);
+})->middleware(['auth', 'verified'])->name('posts.index');
 
 require __DIR__.'/auth.php';
