@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -20,11 +23,13 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Post $post)
+    public function store(StorePostRequest $request)
     {
-        $post->load('user');
+        $validated = $request->validated();
 
-        return response()->json($post);
+        $request->user()->posts()->create($validated);
+
+        return Redirect::route('posts.index')->with('success', 'Post created successfully!');
     }
 
     /**
