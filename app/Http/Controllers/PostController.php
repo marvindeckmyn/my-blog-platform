@@ -48,9 +48,29 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StorePostRequest $request, Post $post)
     {
-        //
+        // 1. Authorization Check
+        if ($post->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        // 2. Get Validated Data
+        $validated = $request->validated();
+
+        // 3. Update Slug
+        // Note: handle later -> only if title changed
+        $slug = Str::slug($validated['title']);
+
+        // 4. Update the Post
+        $post->update([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'slug' => $slug
+        ]);
+
+        // 5. Redirect with Success Message
+        return Redirect::route('posts.index')->with('success', 'Post updated successfully!');
     }
 
     /**
