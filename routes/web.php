@@ -28,8 +28,14 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/posts/create', function () {
         return Inertia::render('Posts/Create');
     })->name('posts.create');
-
+    Route::get('/posts/{post}/edit', function (Post $post) {
+        // Note: Add authorization check here later
+        return Inertia::render('Posts/Edit', [
+            'post' => $post
+        ]);
+    })->name('posts.edit');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
 });
 
 Route::get('/posts', function () {
