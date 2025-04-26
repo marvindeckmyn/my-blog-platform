@@ -36,6 +36,7 @@ Route::middleware('auth', 'verified')->group(function () {
     })->name('posts.edit');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
 
 Route::get('/posts', function () {

@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 defineProps({
@@ -10,6 +10,14 @@ defineProps({
 
 const page = usePage();
 const successMessage = computed(() => page.props.flash?.success);
+
+const deletePost = (id) => {
+    if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+        router.delete(route('posts.destroy', id), {
+            preserveScroll: true,
+        });
+    }
+};
 </script>
 
 <template>
@@ -51,6 +59,13 @@ const successMessage = computed(() => page.props.flash?.success);
                                         v-if="$page.props.auth.user.id === post.user_id">
                                     Edit
                                     </Link>
+
+                                    <button
+                                        @click="deletePost(post.id)"
+                                        class="text-sm text-red-600 hover:text-red-900 ml-4"
+                                        v-if="$page.props.auth.user.id === post.user_id">
+                                        Delete
+                                    </button>
                                 </div>
                             </li>
                         </ul>
