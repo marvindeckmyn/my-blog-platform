@@ -1,11 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 defineProps({
     posts: Object,
 });
+
+const page = usePage();
+const successMessage = computed(() => page.props.flash?.success);
 </script>
 
 <template>
@@ -23,6 +27,10 @@ defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div v-if="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ successMessage }}</span>
+                </div>
+                
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-medium mb-4">Latests Posts</h3>
