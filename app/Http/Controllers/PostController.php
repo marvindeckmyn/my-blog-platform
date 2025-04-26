@@ -27,7 +27,12 @@ class PostController extends Controller
     {
         $validated = $request->validated();
 
-        $request->user()->posts()->create($validated);
+        $request->user()->posts()->create([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'slug' => Str::slug($validated['title'])
+            // Note: slug doesn't guarantee uniqueness, handle later
+        ]);
 
         return Redirect::route('posts.index')->with('success', 'Post created successfully!');
     }
