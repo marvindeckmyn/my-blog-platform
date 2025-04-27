@@ -7,9 +7,12 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
@@ -50,10 +53,8 @@ class PostController extends Controller
      */
     public function update(StorePostRequest $request, Post $post)
     {
-        // 1. Authorization Check
-        if ($post->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        // 1. Authorize using Policy
+        $this->authorize('update', $post);
 
         // 2. Get Validated Data
         $validated = $request->validated();
@@ -63,11 +64,7 @@ class PostController extends Controller
         $slug = Str::slug($validated['title']);
 
         // 4. Update the Post
-        $post->update([
-            'title' => $validated['title'],
-            'body' => $validated['body'],
-            'slug' => $slug
-        ]);
+        $post->update([...$validated, 'slug' => $slug]);
 
         // 5. Redirect with Success Message
         return Redirect::route('posts.index')->with('success', 'Post updated successfully!');
@@ -79,9 +76,7 @@ class PostController extends Controller
     public function destroy(Request $request, Post $post)
     {
         // 1. Authorization
-        if ($post->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        $this->authorize('delete', $post);
 
         // 2. Delete the post
         $post->delete();

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use App\Models\Post;
 
@@ -50,7 +51,8 @@ Route::middleware('auth', 'verified')->group(function () {
     })->name('posts.show');
 
     Route::get('/posts/{post}/edit', function (Post $post) {
-        // Note: Add authorization check here later
+        Gate::authorize('update', $post);
+
         return Inertia::render('Posts/Edit', [
             'post' => $post
         ]);
