@@ -25,6 +25,20 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/posts', function () {
+        return Inertia::render('Posts/Index', [
+            'posts' => Post::with('user:id,name')
+                            ->latest()
+                            ->paginate(10)
+        ]);
+    })->name('posts.index');
+    Route::get('/posts/{post:slug}', function (Post $post) {
+        $post->load('user:id,name');
+
+        return Inertia::render('Posts/Show', [
+            'post' => $post
+        ]);
+    })->name('posts.show');
     Route::get('/posts/create', function () {
         return Inertia::render('Posts/Create');
     })->name('posts.create');
@@ -38,13 +52,5 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
-
-Route::get('/posts', function () {
-    return Inertia::render('Posts/Index', [
-        'posts' => Post::with('user:id,name')
-                        ->latest()
-                        ->paginate(10)
-    ]);
-})->middleware(['auth', 'verified'])->name('posts.index');
 
 require __DIR__.'/auth.php';

@@ -46,12 +46,21 @@ const deletePost = (id) => {
                         <h3 class="text-lg font-medium mb-4">Latests Posts</h3>
                         <ul>
                             <li v-for="post in posts.data" :key="post.id" class="mb-4 pb-4 border-b last:border-b-0">
-                                <h4 class="text=lg font-semibold">{{ post.title }}</h4>
+                                <h4 class="text=lg font-semibold">
+                                    <Link :href="route('posts.show', post.slug)" class="hover:text-indigo-700">
+                                    {{ post.title }}
+                                    </Link>
+                                </h4>
+
                                 <p class="text-sm text-gray-600 mb-2">
                                     By {{ post.user ? post.user.name : 'Unknown Author' }} on {{ new
                                         Date(post.created_at).toLocaleDateString() }}
                                 </p>
                                 <p>{{ post.body.substring(0, 150) }}...</p>
+
+                                <Link :href="route('posts.show', post.slug)" class="hover:text-indigo-700">
+                                Read More &rarr;
+                                </Link>
 
                                 <div class="mt-2">
                                     <Link :href="route('posts.edit', post.id)"
@@ -60,8 +69,7 @@ const deletePost = (id) => {
                                     Edit
                                     </Link>
 
-                                    <button
-                                        @click="deletePost(post.id)"
+                                    <button @click="deletePost(post.id)"
                                         class="text-sm text-red-600 hover:text-red-900 ml-4"
                                         v-if="$page.props.auth.user.id === post.user_id">
                                         Delete
