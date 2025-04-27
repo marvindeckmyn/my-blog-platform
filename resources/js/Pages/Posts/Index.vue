@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
@@ -77,6 +78,9 @@ const deletePost = (id) => {
                                 </div>
                             </li>
                         </ul>
+
+                        <Pagination class="mt-6" :links="posts.links" />
+                        
                     </div>
                 </div>
             </div>

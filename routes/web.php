@@ -21,9 +21,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth', 'verified')->group(function () {
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Post Routes
+    Route::get('/posts/create', function () {
+        return Inertia::render('Posts/Create');
+    })->name('posts.create');
 
     Route::get('/posts', function () {
         return Inertia::render('Posts/Index', [
@@ -32,6 +38,9 @@ Route::middleware('auth', 'verified')->group(function () {
                             ->paginate(10)
         ]);
     })->name('posts.index');
+
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
     Route::get('/posts/{post:slug}', function (Post $post) {
         $post->load('user:id,name');
 
@@ -39,17 +48,16 @@ Route::middleware('auth', 'verified')->group(function () {
             'post' => $post
         ]);
     })->name('posts.show');
-    Route::get('/posts/create', function () {
-        return Inertia::render('Posts/Create');
-    })->name('posts.create');
+
     Route::get('/posts/{post}/edit', function (Post $post) {
         // Note: Add authorization check here later
         return Inertia::render('Posts/Edit', [
             'post' => $post
         ]);
     })->name('posts.edit');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
 
